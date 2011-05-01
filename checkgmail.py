@@ -2,6 +2,9 @@
 """
 Gmail Notifier
 
+Notify when there is new email, auto hide when there is not.
+Nothing else.
+
 by Wang Lu
 2011.05.01
 """
