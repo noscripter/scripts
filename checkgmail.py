@@ -34,16 +34,23 @@ if __name__ == "__main__":
     noti = pynotify.Notification('no new email')
     count = 0
     while True:
-        feed = getfeed()
-        count = getUnreadMsgCount(feed)
-        if count > 0:
-    #        subprocess.call(['notify-send', '--icon=indicator-messages-new', '--urgency=critical','%d new email(s)!' % (count,)])
-            noti.set_property('summary', '%d new email(s)!' % (count,))
-            noti.set_property('icon-name', 'indicator-messages-new')
-            noti.set_urgency(pynotify.URGENCY_CRITICAL)
-            noti.show()
-        else:
-            noti.close()
+        try:
+            feed = getfeed()
+            count = getUnreadMsgCount(feed)
+            if count > 0:
+        #        subprocess.call(['notify-send', '--icon=indicator-messages-new', '--urgency=critical','%d new email(s)!' % (count,)])
+                noti.set_property('summary', '%d new email(s)!' % (count,))
+                noti.set_property('icon-name', 'indicator-messages-new')
+                noti.set_urgency(pynotify.URGENCY_CRITICAL)
+                noti.show()
+            else:
+                noti.close()
+        except:
+            try:
+                pynotify.init('WL Gmail Notifier')
+                noti = pynotify.Notification('no new email')
+            except:
+                pass
         time.sleep(INTERVAL)
 
 
