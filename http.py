@@ -3,7 +3,7 @@
 # should be handy for bots...
 #
 # Programmed by WangLu
-# Last changed: 2011.03.24
+# Last changed: 2011.05.16
 
 import cookielib
 import time
@@ -28,16 +28,17 @@ class HTTPHandler():
         self.last_response = None
 
     # auto retry when meet error
-    def get_url (self, url, data=None, headers=None, retry_count = HTTP_RETRY_COUNT):
+    def get_url (self, url, data=None, headers=None, retry_count = None):
+        if retry_count is None:
+            retry_count = HTTP_RETRY_COUNT
         count = 0
         if (data is not None) and (type(data) is not str):
             data = urllib.urlencode(data)
-            
-        hh = dict(HTTP_HEADERS)
-        if headers is not None:
-            hh.update(headers)
-        headers = hh
-
+        if headers is None:
+            headers = {}
+        else:
+            headers = dict(headers)
+        headers.update(HTTP_HEADERS)
         while (retry_count < 0) or (count < retry_count):
             count += 1
             try:
@@ -47,8 +48,6 @@ class HTTPHandler():
                 return content
             except: 
                 print 'HTTPHandler: error while fetching:', url
-                import traceback
-                traceback.print_exc()
                 pass
             time.sleep(HTTP_RETRY_INTERVAL)
 #        print 'HTTPHandler: max retries reached'
