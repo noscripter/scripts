@@ -65,7 +65,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         query = sys.argv[1]
     else:
-        query = subprocess.Popen(['zenity', '--entry', '--text=', '--entry-text=', '--title="Dictionary"'], stdout=subprocess.PIPE).stdout.read()
+        query = subprocess.Popen(['zenity', '--entry', '--text=', '--entry-text=', '--title=Dictionary'], stdout=subprocess.PIPE).stdout.read()
 
     title = query
     ok, result = query_youdao(query)
