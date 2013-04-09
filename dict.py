@@ -16,10 +16,9 @@ by WangLu
 import os.path
 import subprocess
 import sys
-import http
-import json
 import pynotify
-import urllib
+import requests
+import json
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 keyfrom, key = json.load(open(os.path.join(script_path, 'dict.conf')))
@@ -31,30 +30,32 @@ params = {
         'doctype' : 'json',
         'version' : '1.1'
         }
-http.HTTP_RETRY_COUNT = 1
 
 def query_youdao(query):
     global params
     params['q'] = query
-    obj = json.loads(http.HTTPHandler().get_url(BASEURL+urllib.urlencode(params)))
     result = ''
-    if obj['errorCode'] == 0:
-        title = obj['query'].encode('utf-8')
-        result = '\n'.join([i.encode('utf-8') for i in obj['translation']])
-        try:
-            result += '\n' + 'PHONETIC: ' + obj['basic']['phonetic'].encode('utf-8')
-        except:
-            pass
-        try:
-            result += ''.join(['\n'+i.encode('utf-8') for i in obj['basic']['explains']])
-        except:
-            pass
-        try:
-            web_translation =  ''.join(['\n'+i['key'].encode('utf-8')+' -> '+','.join('  '+j.encode('utf-8') for j in i['value'][:1]) for i in obj['web'][:3]])
-            if web_translation != '':
-                result += '\n' + 'WEB:' + web_translation
-        except:
-            pass
+    try:
+        obj = requests.get(BASEURL, params=params).json
+        if obj['errorCode'] == 0:
+            title = obj['query'].encode('utf-8')
+            result = '\n'.join([i.encode('utf-8') for i in obj['translation']])
+            try:
+                result += '\n' + 'PHONETIC: ' + obj['basic']['phonetic'].encode('utf-8')
+            except:
+                pass
+            try:
+                result += ''.join(['\n'+i.encode('utf-8') for i in obj['basic']['explains']])
+            except:
+                pass
+            try:
+                web_translation =  ''.join(['\n'+i['key'].encode('utf-8')+' -> '+','.join('  '+j.encode('utf-8') for j in i['value'][:1]) for i in obj['web'][:3]])
+                if web_translation != '':
+                    result += '\n' + 'WEB:' + web_translation
+            except:
+                pass
+    except:
+        pass
     return (result == '', result)
 
 if __name__ == '__main__':
@@ -76,7 +77,4 @@ if __name__ == '__main__':
     n.set_urgency(pynotify.URGENCY_CRITICAL)
     n.set_timeout(200)
     n.show()
-
-
-
 
