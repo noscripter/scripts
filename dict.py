@@ -71,7 +71,7 @@ if __name__ == '__main__':
     title = query
     ok, result = query_youdao(query)
     if not ok:
-        pass
+        result = '***'
 
     n = pynotify.Notification(title, result, '')
     n.set_urgency(pynotify.URGENCY_CRITICAL)
