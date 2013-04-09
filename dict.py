@@ -56,7 +56,7 @@ def query_youdao(query):
                 pass
     except:
         pass
-    return (result == '', result)
+    return (result != '', result)
 
 if __name__ == '__main__':
     if not pynotify.init('youdao'):
