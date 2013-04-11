@@ -20,6 +20,7 @@ import pynotify
 import requests
 import json
 
+tmp_id_filepath = '/tmp/dict_notification_id'
 script_path = os.path.dirname(os.path.realpath(__file__))
 keyfrom, key = json.load(open(os.path.join(script_path, 'dict.conf')))
 BASEURL='http://fanyi.youdao.com/openapi.do?'
@@ -74,7 +75,17 @@ if __name__ == '__main__':
         result = '***'
 
     n = pynotify.Notification(title, result, '')
+    try:
+        n.props.id = int(open(tmp_id_filepath).read())
+    except:
+        n.props.id = 0
     n.set_urgency(pynotify.URGENCY_CRITICAL)
     n.set_timeout(200)
     n.show()
+    try:
+        print n.props.id
+        open(tmp_id_filepath, 'w ').write(str(n.props.id))
+    except:
+        pass
+        
 
