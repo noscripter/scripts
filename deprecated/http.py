@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# Deprecated: now we have requests
+
 # HTTP Client with cookie handling
 # should be handy for bots...
 #
